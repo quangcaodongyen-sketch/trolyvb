@@ -110,6 +110,7 @@ export const analyzeDocument = async (
   }
 ): Promise<AnalysisResult> => {
   const modelId = "gemini-3-flash-preview"; 
+  const aiInstance = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
   let systemInstruction = getSystemInstruction(options);
   if (userRequest) systemInstruction += `\n\nLƯU Ý RIÊNG: "${userRequest}"`;
 
@@ -118,7 +119,7 @@ export const analyzeDocument = async (
   if (text) parts.push({ text: text });
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await aiInstance.models.generateContent({
       model: modelId,
       contents: { parts: parts },
       config: {
@@ -141,6 +142,7 @@ export const sendChatQuestion = async (
   documentContext: { text: string; fileData: string | null; mimeType: string | null; analysis: AnalysisResult }
 ): Promise<string> => {
   const modelId = "gemini-3-flash-preview";
+  const aiInstance = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
   const history: any[] = [];
   const docParts: any[] = [];
   if (documentContext.fileData && documentContext.mimeType) docParts.push({ inlineData: { mimeType: documentContext.mimeType, data: documentContext.fileData } });
@@ -150,7 +152,7 @@ export const sendChatQuestion = async (
   history.push({ role: 'model', parts: [{ text: JSON.stringify(documentContext.analysis) }] });
   currentHistory.forEach(msg => history.push({ role: msg.role, parts: [{ text: msg.text }] }));
 
-  const chat = ai.chats.create({
+  const chat = aiInstance.chats.create({
     model: modelId,
     config: { systemInstruction: getSystemInstruction() },
     history
