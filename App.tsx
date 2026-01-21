@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
 import { ReadingMode, ActionMode, ToneMode, AnalysisResult, ChatMessage } from './types';
-import InputSection from './components/InputSection.tsx';
-import ControlPanel from './components/ControlPanel.tsx';
-import ResultDisplay from './components/ResultDisplay.tsx';
-import ChatSection from './components/ChatSection.tsx';
-import { analyzeDocument, sendChatQuestion } from './services/geminiService.ts';
-import { GraduationCap, Info, School, Copyright } from 'lucide-react';
+import InputSection from './components/InputSection';
+import ControlPanel from './components/ControlPanel';
+import ResultDisplay from './components/ResultDisplay';
+import ChatSection from './components/ChatSection';
+import { analyzeDocument, sendChatQuestion } from './services/geminiService';
+import { GraduationCap, Info, Users, School, Copyright } from 'lucide-react';
 
 const App: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -76,6 +76,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-12 bg-[#f0f4f8]">
+      {/* 3D Modern Header */}
       <header className="relative pt-10 pb-24 px-4 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 skew-y-2 origin-top-left -translate-y-12 shadow-2xl"></div>
         <div className="relative max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-6">

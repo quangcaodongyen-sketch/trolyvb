@@ -40,6 +40,7 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
 
   return (
     <div className="space-y-8">
+      {/* 3D Staff List Section */}
       <div className="block-3d p-6 animate-fadeIn">
         <h3 className="text-lg font-black text-gray-800 mb-6 flex items-center gap-3">
           <div className="bg-indigo-600 p-2 rounded-xl shadow-lg"><Users className="w-5 h-5 text-white" /></div>
