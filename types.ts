@@ -37,11 +37,12 @@ export interface DeepAnalysis {
 }
 
 export interface TaskList {
-  schoolBoard: string[]; // BGH
-  groupLeaders: string[]; // Tổ trưởng (Đỗ Hồng Hà) & Tổ phó (Nguyễn Phương Thảo)
-  englishTeachers: string[]; // Nhóm Tiếng Anh (Mr. Thành & Ms. Vươn)
-  artsTeachers: string[]; // Nhóm Nghệ thuật & Đội (Việt, Duy, Tiêm, Lê)
-  socialScienceTeachers: string[]; // GV Tổ KHXH nói chung
+  schoolBoard: string[]; 
+  groupLeaders: string[]; 
+  homeroomTeachers: string[]; // Nhiệm vụ GVCN
+  englishTeachers: string[]; 
+  artsTeachers: string[]; 
+  socialScienceTeachers: string[]; 
 }
 
 export interface ChecklistItem {

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
-import { CheckCircle2, Lightbulb, ListTodo, FileText, Layers, ShieldAlert, TrendingUp, Users, School, GraduationCap, ClipboardCheck, Palette, BookOpen, Trophy, UserCheck, Star } from 'lucide-react';
+import { CheckCircle2, Lightbulb, ListTodo, FileText, Layers, ShieldAlert, TrendingUp, Users, School, GraduationCap, ClipboardCheck, Palette, BookOpen, Trophy, UserCheck, Star, Home } from 'lucide-react';
 
 interface ResultDisplayProps {
   result: AnalysisResult;
@@ -20,22 +20,22 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
   ];
 
   const staffMembers = [
-    { role: 'Tổ trưởng', name: 'Đỗ Hồng Hà', group: 'Ngữ văn', priority: 1 },
-    { role: 'Tổ phó', name: 'Nguyễn Phương Thảo', group: 'Ngữ văn', priority: 2 },
-    { role: 'Giáo viên', name: 'Hoàng Thị Nhiên', group: 'Ngữ văn', priority: 3 },
-    { role: 'Giáo viên', name: 'Đinh Văn Thành', group: 'Tiếng Anh', priority: 3 },
-    { role: 'Giáo viên', name: 'Hoàng Thị Vươn', group: 'Tiếng Anh', priority: 3 },
-    { role: 'Giáo viên', name: 'Mai Văn Tình', group: 'Sử - Địa', priority: 3 },
-    { role: 'Giáo viên', name: 'Hoàng Thị Hương', group: 'Sử - Địa', priority: 3 },
-    { role: 'Giáo viên', name: 'Trương Thị Hiền', group: 'Sử - GDCD', priority: 3 },
-    { role: 'Giáo viên', name: 'Nguyễn Đức Hậu', group: 'Thể chất', priority: 3 },
-    { role: 'Giáo viên', name: 'Nguyễn Ngọc Tân', group: 'Thể chất', priority: 3 },
-    { role: 'Giáo viên', name: 'Đỗ Mạnh Việt', group: 'Mĩ thuật', priority: 3 },
-    { role: 'Giáo viên', name: 'Mai Hoàng Duy', group: 'Mĩ thuật', priority: 3 },
-    { role: 'Giáo viên', name: 'Nguyễn Văn Tiềm', group: 'Âm nhạc', priority: 3 },
-    { role: 'TPT Đội', name: 'Vũ Thị Lê', group: 'Âm nhạc', priority: 3 },
-    { role: 'GV Hợp đồng', name: 'Đ/c My', group: 'Ngữ văn', priority: 4 },
-    { role: 'GV Hợp đồng', name: 'Đ/c Ánh', group: 'GDCD', priority: 4 },
+    { role: 'Tổ trưởng', name: 'Đỗ Hồng Hà', group: 'Ngữ văn', class: '8C1', priority: 1 },
+    { role: 'Tổ phó', name: 'Nguyễn Phương Thảo', group: 'Ngữ văn', class: '6A5', priority: 2 },
+    { role: 'Giáo viên', name: 'Hoàng Thị Nhiên', group: 'Ngữ văn', class: '7B1', priority: 3 },
+    { role: 'Giáo viên', name: 'Đinh Văn Thành', group: 'Tiếng Anh', class: null, priority: 3 },
+    { role: 'Giáo viên', name: 'Hoàng Thị Vươn', group: 'Tiếng Anh', class: null, priority: 3 },
+    { role: 'Giáo viên', name: 'Mai Văn Tình', group: 'Sử - Địa', class: '9D3', priority: 3 },
+    { role: 'Giáo viên', name: 'Hoàng Thị Hương', group: 'Sử - Địa', class: '8C3', priority: 3 },
+    { role: 'Giáo viên', name: 'Trương Thị Hiền', group: 'Sử - GDCD', class: '6A3', priority: 3 },
+    { role: 'Giáo viên', name: 'Nguyễn Đức Hậu', group: 'Thể chất', class: '9D1', priority: 3 },
+    { role: 'Giáo viên', name: 'Nguyễn Ngọc Tân', group: 'Thể chất', class: '7B4', priority: 3 },
+    { role: 'Giáo viên', name: 'Đỗ Mạnh Việt', group: 'Mĩ thuật', class: '7B3', priority: 3 },
+    { role: 'Giáo viên', name: 'Mai Hoàng Duy', group: 'Mĩ thuật', class: '6A2', priority: 3 },
+    { role: 'Giáo viên', name: 'Nguyễn Văn Tiềm', group: 'Âm nhạc', class: '8C4', priority: 3 },
+    { role: 'TPT Đội', name: 'Vũ Thị Lê', group: 'Âm nhạc', class: null, priority: 3 },
+    { role: 'GV Hợp đồng', name: 'Đ/c My', group: 'Ngữ văn', class: null, priority: 4 },
+    { role: 'GV Hợp đồng', name: 'Đ/c Ánh', group: 'GDCD', class: null, priority: 4 },
   ];
 
   return (
@@ -44,15 +44,17 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
       <div className="block-3d p-6 animate-fadeIn">
         <h3 className="text-lg font-black text-gray-800 mb-6 flex items-center gap-3">
           <div className="bg-indigo-600 p-2 rounded-xl shadow-lg"><Users className="w-5 h-5 text-white" /></div>
-          Danh sách nhân sự Tổ Khoa học Xã hội
+          Nhân sự & Công tác Chủ nhiệm Tổ KHXH
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {staffMembers.sort((a,b) => a.priority - b.priority).map((member, idx) => (
             <div key={idx} className={`block-3d-inset p-3 flex flex-col items-center text-center transition-transform hover:scale-105 ${member.priority <= 2 ? 'ring-2 ring-indigo-400/30' : ''}`}>
-              {member.priority <= 2 ? (
-                <Star className="w-4 h-4 text-yellow-500 mb-1 fill-yellow-500" />
+              {member.class ? (
+                <div className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-black rounded-full mb-1 border border-amber-200 shadow-sm flex items-center gap-1">
+                  <Home className="w-2 h-2" /> {member.class}
+                </div>
               ) : (
-                <div className="w-4 h-4 mb-1" />
+                <div className="h-[15px] mb-1" />
               )}
               <span className="text-[10px] font-black uppercase text-indigo-500 tracking-tighter mb-1 leading-none">{member.role}</span>
               <span className="text-sm font-bold text-gray-800 leading-tight">{member.name}</span>
@@ -155,23 +157,23 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
                 highlight 
               />
               <TaskColumn 
+                title="Nhóm GV Chủ nhiệm (Hà, Thảo, Nhiên...)" 
+                icon={<Home className="w-6 h-6" />} 
+                tasks={result.tasks.homeroomTeachers} 
+                color="bg-amber-50 border-amber-200 text-amber-900" 
+                highlight
+              />
+              <TaskColumn 
                 title="Nhóm Tiếng Anh (Thành - Vươn)" 
                 icon={<GraduationCap className="w-6 h-6" />} 
                 tasks={result.tasks.englishTeachers} 
                 color="bg-green-50 border-green-200 text-green-900" 
               />
               <TaskColumn 
-                title="Nhóm Văn-Sử-Địa-GDCD & HĐ" 
+                title="Chuyên môn KHXH & HĐ" 
                 icon={<BookOpen className="w-6 h-6" />} 
                 tasks={result.tasks.socialScienceTeachers} 
                 color="bg-blue-50 border-blue-200 text-blue-800" 
-                highlight
-              />
-              <TaskColumn 
-                title="Phong trào-Thể chất-Đội" 
-                icon={<Trophy className="w-6 h-6" />} 
-                tasks={result.tasks.artsTeachers} 
-                color="bg-orange-50 border-orange-200 text-orange-900"
               />
               <div className="md:col-span-2">
                 <TaskColumn 
@@ -254,7 +256,7 @@ const TaskColumn = ({ title, icon, tasks, color, highlight = false }: { title: s
       <div className="p-3 bg-white/80 rounded-2xl shadow-sm backdrop-blur-md">{icon}</div>
       {title}
     </h4>
-    {tasks.length > 0 ? (
+    {tasks && tasks.length > 0 ? (
       <ul className="space-y-4">
         {tasks.map((task, i) => (
           <li key={i} className="flex items-start gap-3 bg-white/40 p-3 rounded-2xl border border-white/50">

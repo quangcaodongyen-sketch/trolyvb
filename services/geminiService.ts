@@ -4,11 +4,8 @@ import { AnalysisResult, ReadingMode, ActionMode, ToneMode, ChatMessage } from "
 
 // Hàm lấy API Key an toàn
 const getApiKey = () => {
-  // 1. Ưu tiên lấy từ localStorage (do người dùng nhập ở giao diện)
   const savedKey = localStorage.getItem('GEMINI_API_KEY');
   if (savedKey) return savedKey.trim();
-
-  // 2. Lấy từ window.process (Vercel injection)
   const envKey = (window as any).process?.env?.API_KEY || process.env.API_KEY || "";
   return envKey.trim();
 };
@@ -50,11 +47,12 @@ const analysisSchema = {
       properties: {
         schoolBoard: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ dành cho Ban Giám Hiệu" },
         groupLeaders: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ cho Tổ trưởng Đỗ Hồng Hà & Tổ phó Nguyễn Phương Thảo" },
+        homeroomTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ dành riêng cho các GVCN (Hà, Thảo, Nhiên, Tình, Hương, Hiền, Hậu, Tân, Việt, Duy, Tiềm)" },
         englishTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ chuyên biệt cho nhóm Tiếng Anh (Đinh Văn Thành & Hoàng Thị Vươn)" },
-        artsTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ cho nhóm Nghệ thuật (Việt, Duy, Tiềm), GDTC (Hậu, Tân) và Đội (Vũ Thị Lê)" },
-        socialScienceTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ cho nhóm Ngữ văn (Hà, Nhiên, Thảo, My), Sử-Địa-GDCD (Tình, Hương, Hiền, Ánh)" },
+        artsTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ cho nhóm Nghệ thuật, GDTC và Đội" },
+        socialScienceTeachers: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Nhiệm vụ chung cho các giáo viên còn lại trong tổ" },
       },
-      required: ["schoolBoard", "groupLeaders", "englishTeachers", "artsTeachers", "socialScienceTeachers"]
+      required: ["schoolBoard", "groupLeaders", "homeroomTeachers", "englishTeachers", "artsTeachers", "socialScienceTeachers"]
     },
     checklist: {
       type: Type.ARRAY,
@@ -74,34 +72,29 @@ const analysisSchema = {
 };
 
 const getSystemInstruction = (options?: { readingMode?: ReadingMode, toneMode?: ToneMode }) => `
-    Bạn là "Trợ lý nghiên cứu VB của Tổ Khoa học Xã hội", chuyên gia phân tích văn bản hành chính giáo dục.
+    Bạn là "Trợ lý nghiên cứu VB của Tổ Khoa học Xã hội", chuyên gia phân tích văn bản hành chính giáo dục của Trường THCS Đồng Yên.
     
-    SƠ ĐỒ NHÂN SỰ TOÀN DIỆN CỦA TỔ KHXH:
-    1. BAN LÃNH ĐẠO TỔ:
-       - Tổ trưởng: Đỗ Hồng Hà.
-       - Tổ phó: Nguyễn Phương Thảo.
+    SƠ ĐỒ NHÂN SỰ VÀ CÔNG TÁC CHỦ NHIỆM:
+    1. LÃNH ĐẠO TỔ:
+       - Tổ trưởng: Đỗ Hồng Hà (CN 8C1).
+       - Tổ phó: Nguyễn Phương Thảo (CN 6A5).
     
-    2. NHÓM NGỮ VĂN: 
-       - Biên chế: Đỗ Hồng Hà, Hoàng Thị Nhiên, Nguyễn Phương Thảo.
-       - Hợp đồng: Đ/c My.
+    2. DANH SÁCH GVCN TRONG TỔ (Rất quan trọng):
+       - Khối 6: Nguyễn Phương Thảo (6A5), Trương Thị Hiền (6A3), Mai Hoàng Duy (6A2).
+       - Khối 7: Hoàng Thị Nhiên (7B1), Đỗ Mạnh Việt (7B3), Nguyễn Ngọc Tân (7B4).
+       - Khối 8: Đỗ Hồng Hà (8C1), Hoàng Thị Hương (8C3), Nguyễn Văn Tiềm (8C4).
+       - Khối 9: Mai Văn Tình (9D3), Nguyễn Đức Hậu (9D1).
     
-    3. NHÓM TIẾNG ANH: Đinh Văn Thành, Hoàng Thị Vươn.
-    
-    4. NHÓM LỊCH SỬ - ĐỊA LÍ - GDCD:
-       - Biên chế: Mai Văn Tình, Hoàng Thị Hương, Trương Thị Hiền.
-       - Hợp đồng: Đ/c Ánh (GDCD).
-    
-    5. NHÓM GIÁO DỤC THỂ CHẤT: Nguyễn Đức Hậu, Nguyễn Ngọc Tân.
-    
-    6. NHÓM NGHỆ THUẬT & ĐỘI:
-       - Mĩ thuật: Đỗ Mạnh Việt, Mai Hoàng Duy.
-       - Âm nhạc & Đội: Nguyễn Văn Tiềm, Vũ Thị Lê (Tổng phụ trách Đội).
+    3. CÁC NHÓM CHUYÊN MÔN KHÁC:
+       - Tiếng Anh: Đinh Văn Thành, Hoàng Thị Vươn.
+       - Tổng phụ trách Đội: Vũ Thị Lê.
+       - GV Hợp đồng: Đ/c My (Văn), Đ/c Ánh (GDCD).
     
     NHIỆM VỤ CỦA BẠN:
-    - Phân tích và trích xuất nhiệm vụ CỤ THỂ theo nhóm chuyên môn.
-    - Chú ý: Các văn bản về thi đấu thể thao, sức khỏe, hội thao gán cho nhóm GDTC (Hậu, Tân). 
-    - Các nhiệm vụ giảng dạy bồi dưỡng liên quan đến GV hợp đồng (My, Ánh) cần được nêu rõ.
-    - Luôn trích xuất chính xác mốc thời gian (Deadline).
+    - Nếu văn bản có nội dung về quản lý lớp, thu nộp, phong trào học sinh, hãy trích xuất nhiệm vụ CỤ THỂ vào mục "homeroomTeachers".
+    - Ghi rõ tên lớp bên cạnh tên giáo viên khi giao việc (Ví dụ: "Đ/c Tình (9D3): Triển khai...").
+    - Đối với văn bản chuyên môn (soạn giảng, thi GVG), gán cho các nhóm bộ môn tương ứng.
+    - Luôn đảm bảo trích xuất chính xác mốc thời gian (Deadline).
     
     ${options ? `Chế độ: ${options.readingMode}, Giọng văn: ${options.toneMode}` : ''}
 `;
