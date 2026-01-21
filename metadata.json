@@ -1,0 +1,7 @@
+{
+  "name": "Trợ lý đọc VB",
+  "description": "Ứng dụng hỗ trợ giáo viên THCS phân tích, tóm tắt và trích xuất nhiệm vụ từ các văn bản hành chính.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
