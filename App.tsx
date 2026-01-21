@@ -1,18 +1,21 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReadingMode, ActionMode, ToneMode, AnalysisResult, ChatMessage } from './types';
 import InputSection from './components/InputSection';
 import ControlPanel from './components/ControlPanel';
 import ResultDisplay from './components/ResultDisplay';
 import ChatSection from './components/ChatSection';
 import { analyzeDocument, sendChatQuestion } from './services/geminiService';
-import { GraduationCap, Info, Users, School, Copyright } from 'lucide-react';
+import { GraduationCap, Info, School, Copyright, Key, ExternalLink, Save } from 'lucide-react';
 
 const App: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
   const [fileData, setFileData] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string | null>(null);
   const [userRequest, setUserRequest] = useState<string>('');
+  
+  const [apiKey, setApiKey] = useState<string>('');
+  const [showApiKey, setShowApiKey] = useState<boolean>(false);
   
   const [readingMode, setReadingMode] = useState<ReadingMode>(ReadingMode.STANDARD);
   const [actionMode, setActionMode] = useState<ActionMode>(ActionMode.ALL);
@@ -24,6 +27,16 @@ const App: React.FC = () => {
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem('GEMINI_API_KEY');
+    if (savedKey) setApiKey(savedKey);
+  }, []);
+
+  const saveApiKey = () => {
+    localStorage.setItem('GEMINI_API_KEY', apiKey);
+    alert('Đã lưu API Key thành công!');
+  };
 
   const handleAnalyze = async () => {
     if (!inputText && !fileData) return;
@@ -96,6 +109,51 @@ const App: React.FC = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 -mt-12 relative z-10">
+        {/* API KEY SECTION */}
+        <div className="block-3d p-6 mb-8 bg-white/80 backdrop-blur-lg border border-white/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-amber-100 p-2 rounded-xl">
+                <Key className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-800 text-sm uppercase tracking-wider">Cấu hình Gemini API Key</h3>
+                <a 
+                  href="https://aistudio.google.com/app/apikey" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-500 text-xs hover:underline flex items-center gap-1 mt-0.5"
+                >
+                  Chưa có Key? Lấy miễn phí tại đây <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <div className="block-3d-inset flex-1 md:w-64 p-1">
+                <input 
+                  type={showApiKey ? "text" : "password"} 
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Dán API Key của bạn vào đây..."
+                  className="w-full bg-transparent px-4 py-2 text-sm outline-none font-mono text-gray-600"
+                />
+              </div>
+              <button 
+                onClick={() => setShowApiKey(!showApiKey)}
+                className="btn-3d p-2.5 bg-white text-gray-500 rounded-xl text-xs font-bold"
+              >
+                {showApiKey ? "Ẩn" : "Hiện"}
+              </button>
+              <button 
+                onClick={saveApiKey}
+                className="btn-3d p-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" /> Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+
         {error && (
           <div className="bg-red-50 border-2 border-red-200 text-red-700 p-5 mb-8 rounded-2xl shadow-xl flex items-start gap-4 animate-bounce">
             <div className="bg-red-100 p-2 rounded-full"><Info className="w-6 h-6" /></div>

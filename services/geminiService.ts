@@ -4,10 +4,13 @@ import { AnalysisResult, ReadingMode, ActionMode, ToneMode, ChatMessage } from "
 
 // Hàm lấy API Key an toàn
 const getApiKey = () => {
-  // Ưu tiên lấy từ window.process (được định nghĩa trong index.html) 
-  // hoặc trực tiếp từ process.env nếu có công cụ build hỗ trợ
-  const key = (window as any).process?.env?.API_KEY || process.env.API_KEY || "";
-  return key.trim();
+  // 1. Ưu tiên lấy từ localStorage (do người dùng nhập ở giao diện)
+  const savedKey = localStorage.getItem('GEMINI_API_KEY');
+  if (savedKey) return savedKey.trim();
+
+  // 2. Lấy từ window.process (Vercel injection)
+  const envKey = (window as any).process?.env?.API_KEY || process.env.API_KEY || "";
+  return envKey.trim();
 };
 
 const analysisSchema = {
@@ -115,7 +118,7 @@ export const analyzeDocument = async (
   }
 ): Promise<AnalysisResult> => {
   const key = getApiKey();
-  if (!key) throw new Error("API Key chưa được cấu hình. Vui lòng kiểm tra biến môi trường API_KEY trên Vercel.");
+  if (!key) throw new Error("Chưa có API Key. Vui lòng nhập Key ở ô cấu hình phía trên.");
   
   const ai = new GoogleGenAI({ apiKey: key });
   const modelId = "gemini-3-flash-preview"; 
@@ -150,7 +153,7 @@ export const sendChatQuestion = async (
   documentContext: { text: string; fileData: string | null; mimeType: string | null; analysis: AnalysisResult }
 ): Promise<string> => {
   const key = getApiKey();
-  if (!key) throw new Error("API Key chưa được cấu hình.");
+  if (!key) throw new Error("Chưa có API Key.");
 
   const ai = new GoogleGenAI({ apiKey: key });
   const modelId = "gemini-3-flash-preview";
