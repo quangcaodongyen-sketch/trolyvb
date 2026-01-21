@@ -2,9 +2,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AnalysisResult, ReadingMode, ActionMode, ToneMode, ChatMessage } from "../types";
 
-// Đảm bảo lấy API Key từ process.env một cách an toàn
+// Hàm lấy API Key an toàn
 const getApiKey = () => {
-  return process.env.API_KEY || (window as any).process?.env?.API_KEY || "";
+  // Ưu tiên lấy từ window.process (được định nghĩa trong index.html) 
+  // hoặc trực tiếp từ process.env nếu có công cụ build hỗ trợ
+  const key = (window as any).process?.env?.API_KEY || process.env.API_KEY || "";
+  return key.trim();
 };
 
 const analysisSchema = {
@@ -111,7 +114,10 @@ export const analyzeDocument = async (
     toneMode: ToneMode;
   }
 ): Promise<AnalysisResult> => {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const key = getApiKey();
+  if (!key) throw new Error("API Key chưa được cấu hình. Vui lòng kiểm tra biến môi trường API_KEY trên Vercel.");
+  
+  const ai = new GoogleGenAI({ apiKey: key });
   const modelId = "gemini-3-flash-preview"; 
   let systemInstruction = getSystemInstruction(options);
   if (userRequest) systemInstruction += `\n\nLƯU Ý RIÊNG: "${userRequest}"`;
@@ -132,9 +138,9 @@ export const analyzeDocument = async (
       },
     });
     return JSON.parse(response.text || "{}") as AnalysisResult;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    throw error;
+    throw new Error(error.message || "Lỗi kết nối API Gemini.");
   }
 };
 
@@ -143,7 +149,10 @@ export const sendChatQuestion = async (
   newMessage: string,
   documentContext: { text: string; fileData: string | null; mimeType: string | null; analysis: AnalysisResult }
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const key = getApiKey();
+  if (!key) throw new Error("API Key chưa được cấu hình.");
+
+  const ai = new GoogleGenAI({ apiKey: key });
   const modelId = "gemini-3-flash-preview";
   const history: any[] = [];
   const docParts: any[] = [];
