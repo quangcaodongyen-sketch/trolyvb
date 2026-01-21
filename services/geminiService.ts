@@ -2,8 +2,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AnalysisResult, ReadingMode, ActionMode, ToneMode, ChatMessage } from "../types";
 
-const apiKey = process.env.API_KEY;
-const ai = new GoogleGenAI({ apiKey: apiKey || "" });
+// Đảm bảo lấy API Key từ process.env một cách an toàn
+const getApiKey = () => {
+  return process.env.API_KEY || (window as any).process?.env?.API_KEY || "";
+};
 
 const analysisSchema = {
   type: Type.OBJECT,
@@ -109,6 +111,7 @@ export const analyzeDocument = async (
     toneMode: ToneMode;
   }
 ): Promise<AnalysisResult> => {
+  const ai = new GoogleGenAI({ apiKey: getApiKey() });
   const modelId = "gemini-3-flash-preview"; 
   let systemInstruction = getSystemInstruction(options);
   if (userRequest) systemInstruction += `\n\nLƯU Ý RIÊNG: "${userRequest}"`;
@@ -140,6 +143,7 @@ export const sendChatQuestion = async (
   newMessage: string,
   documentContext: { text: string; fileData: string | null; mimeType: string | null; analysis: AnalysisResult }
 ): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: getApiKey() });
   const modelId = "gemini-3-flash-preview";
   const history: any[] = [];
   const docParts: any[] = [];

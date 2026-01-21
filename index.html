@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      // Giả lập process.env để tránh lỗi trắng màn hình khi truy cập process.env.API_KEY
+      window.process = {
+        env: {
+          API_KEY: "" // Sẽ được hệ thống tự động thay thế hoặc lấy từ env của Vercel
+        }
+      };
+    </script>
     <style>
       :root {
         --bg-color: #f0f4f8;
@@ -78,6 +86,6 @@
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
